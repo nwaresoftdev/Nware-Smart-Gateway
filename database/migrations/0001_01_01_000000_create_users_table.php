@@ -15,10 +15,19 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('mobile')->unique();
+            $table->integer('user_type_id')->index();
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('otp_verified_at')->nullable();
+            $table->timestamp('last_login_at')->nullable();
             $table->string('password');
+            $table->string('fcm_token');
+            $table->boolean('is_active')->default(0);
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->unique(['mobile', 'user_type_id']);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
