@@ -99,6 +99,18 @@ return [
 
     'key' => env('APP_KEY'),
 
+    /*
+   |--------------------------------------------------------------------------
+   | Client Private Key
+   |--------------------------------------------------------------------------
+   |
+   | This key is utilized by Laravel's encryption services and should be set
+   | to a random, 32 character string to ensure that all encrypted values
+   | are secure. You should do this prior to deploying the application.
+   |
+   */
+    'client_private_key_password' => 'ENEteO2wFWueuW5s6anVMtg7NpN4LKLUrK6zkfmA2Q7te7fpzB0p4XihxSUIx5vc',
+
     'previous_keys' => [
         ...array_filter(
             explode(',', env('APP_PREVIOUS_KEYS', ''))
