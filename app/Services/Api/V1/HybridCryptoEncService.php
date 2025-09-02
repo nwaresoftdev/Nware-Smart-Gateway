@@ -4,6 +4,7 @@ namespace App\Services\Api\V1;
 
 class HybridCryptoEncService
 {
+
     private string $publicKeyPath;
     private string $privateKeyPath;
 
@@ -73,4 +74,18 @@ class HybridCryptoEncService
 
         return json_decode($plaintext, true);
     }
+
+    public static function encryption(array $payload ): array
+    {
+        $obj = new HybridCryptoEncService();
+        return $obj->encrypt( $payload );
+    }
+    public static function decryption( array $data ): array
+    {
+        $obj = new HybridCryptoEncService();
+        return $obj->decrypt( $data );
+    }
+
+
+
 }

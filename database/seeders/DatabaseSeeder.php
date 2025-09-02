@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'mobile' => '0123456789',
+            'user_type_id' => 12,
+            'fcm_token' => 'dsd87878',
         ]);
     }
 }

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class NodeModel extends Model
 {
     protected $fillable = [
-        // No defined columns beyond timestamps in migration
+        'node_type_id',
+        'name',
+        'description',
     ];
 }

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('mobile')->unique();
-            $table->integer('user_type_id')->index();
+            $table->foreignIdFor(\App\Models\UserType::class)->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('otp_verified_at')->nullable();
             $table->timestamp('last_login_at')->nullable();

@@ -10,7 +10,7 @@ class Device extends Model
         'device_type_id',
         'device_model_id',
         'device_group_id',
-        'orgnization_id',
+        'organization_id',
         'user_id',
         'device_name',
         'device_on_off',

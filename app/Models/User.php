@@ -3,7 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -73,5 +76,15 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public static function updateInformation($user): void
+    {
+        User::find($user->id)->update(['last_login_at' => Carbon::now(), 'otp_verified_at' => Carbon::now(), 'ip_address' => request()->ip()]);
+    }
+
+    public function otps(): HasMany
+    {
+        return $this->hasMany(Otp::class);
     }
 }

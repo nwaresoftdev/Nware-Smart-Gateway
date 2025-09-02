@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('node_models', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\NodeType::class)->nullable();
+            $table->string('name')->nullable();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

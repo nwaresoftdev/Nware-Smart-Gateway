@@ -61,3 +61,22 @@ Route::get('/decry', function (Request $request) {
     ]);
 });
 
+// API Start
+Route::group(["prefix" => 'v1'], function () {
+    //TODO:: Testing API for Encryption and Decryption
+    Route::post('test-encryption', function (Request $request) {
+        $payload = $request->toArray();
+        $payload = HybridCryptoEncService::encryption($payload);
+        return response()->json($payload);
+    });
+    Route::post('test-decryption', function (Request $request) {
+        $response = $request->toArray();
+        $response = HybridCryptoEncService::decryption($response);
+        return response()->json($response);
+    });
+
+    Route::post('get-login-otp', [\App\Http\Controllers\Api\V1\Auth\LoginController::class, 'getLoginOtp']);
+    Route::post('resend-otp', [\App\Http\Controllers\Api\V1\Auth\LoginController::class, 'getLoginOtp']);
+    Route::post('login', [\App\Http\Controllers\Api\V1\Auth\LoginController::class, 'login']);
+    Route::post('logout', [\App\Http\Controllers\Api\V1\Auth\LoginController::class, 'logout']);
+});

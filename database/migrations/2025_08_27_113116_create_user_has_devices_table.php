@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('user_has_devices', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\User::class)->nullable();
+            $table->foreignIdFor(\App\Models\Device::class)->nullable();
             $table->timestamps();
         });
     }

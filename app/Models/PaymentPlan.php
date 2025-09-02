@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class PaymentPlan extends Model
 {
     protected $fillable = [
-        // No defined columns beyond timestamps in migration
+        'payment_plan_name',
+        'description',
+        'subscription_type',
     ];
 }

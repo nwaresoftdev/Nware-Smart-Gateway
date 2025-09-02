@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('node_smart_switch_data', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\Node::class)->nullable();
+            $table->string('node_line_on_off', 256)->default('0');
+            $table->string('node_line_load', 256)->default('0');
+            $table->dateTime('data_timestamp')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

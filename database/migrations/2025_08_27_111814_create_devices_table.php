@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\DeviceType::class)->nullable();
             $table->foreignIdFor(\App\Models\DeviceModel::class)->nullable();
             $table->foreignIdFor(\App\Models\DeviceGroup::class)->nullable();
-            $table->foreignIdFor(\App\Models\Orgnization::class)->nullable();
+            $table->foreignIdFor(\App\Models\Organization::class)->nullable();
             $table->foreignIdFor(\App\Models\User::class)->nullable();
             $table->string('device_name')->nullable();
             $table->boolean('device_on_off')->default(0);

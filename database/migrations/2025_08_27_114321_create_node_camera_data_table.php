@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('node_camera_data', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\Node::class)->nullable();
+            $table->boolean('node_on_off')->default(0);
+            $table->dateTime('data_timestamp')->nullable();
             $table->timestamps();
         });
     }

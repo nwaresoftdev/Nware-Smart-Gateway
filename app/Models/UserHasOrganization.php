@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Orgnization extends Model
+class UserHasOrganization extends Model
 {
     protected $fillable = [
-        // No additional columns besides timestamps
+        'user_id',
+        'organization_id',
     ];
 }

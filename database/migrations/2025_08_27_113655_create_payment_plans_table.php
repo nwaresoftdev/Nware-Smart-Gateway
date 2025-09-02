@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('payment_plans', function (Blueprint $table) {
             $table->id();
+            $table->string('payment_plan_name')->nullable();
+            $table->string('description')->nullable();
+            $table->integer('subscription_type')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

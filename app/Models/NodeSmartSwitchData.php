@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class NodeSmartSwitchData extends Model
 {
     protected $fillable = [
-        // No defined columns beyond timestamps in migration
+        'node_id',
+        'node_line_on_off',
+        'node_line_load',
+        'data_timestamp',
     ];
 }

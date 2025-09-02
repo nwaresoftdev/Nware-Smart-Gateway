@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class NodeCameraData extends Model
 {
     protected $fillable = [
-        // No defined columns beyond timestamps in migration
+        'node_id',
+        'node_on_off',
+        'data_timestamp',
     ];
 }

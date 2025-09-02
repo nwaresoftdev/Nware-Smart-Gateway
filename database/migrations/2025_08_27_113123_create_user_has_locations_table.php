@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('user_has_locations', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\User::class)->nullable();
+            $table->foreignIdFor(\App\Models\Location::class)->nullable();
             $table->timestamps();
         });
     }
