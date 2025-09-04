@@ -19,11 +19,12 @@ class LoginController extends Controller
 
     public function getLoginOtp(Request $request)
     {
+//        dd(phpinfo());
 //        $credentials = request(['mobile', 'userName']);
         $response = $request->toArray();
         $credentials = HybridCryptoEncService::decryption($response);
         $user = User::with('otps')->whereIn('mobile', $credentials)->first();
-
+//dd($user);
         if (!$user) {
             return $this->errorResponse('User Not Found');
         }
@@ -69,8 +70,8 @@ class LoginController extends Controller
         }
 
         if ($otp && in_array($otp->otp, [$credentials['OTP']])) {
-//            $time = auth('api')->factory()->getTTL() * config('session.lifetime');
-//            $token = auth('api')->setTTL($time)->login($user);
+            $time = auth('api')->factory()->getTTL() * config('session.lifetime');
+            $token = $this->token = auth('api')->setTTL($time)->login($user);
             Otp::updateOptVerifiedAt($otp);
             User::updateInformation($user);
             $data = [
@@ -92,8 +93,10 @@ class LoginController extends Controller
 
     public function logout()
     {
+        $token = request()->bearerToken();
         auth()->logout();
-
+        auth()->logout(true);
+dd($token);
         return $this->successResponse('Successfully logged out');
     }
 

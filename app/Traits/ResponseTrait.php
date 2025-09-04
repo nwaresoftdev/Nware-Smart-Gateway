@@ -3,29 +3,64 @@
 namespace App\Traits;
 
 use App\Services\Api\V1\HybridCryptoEncService;
+use Carbon\Carbon;
 
 trait ResponseTrait
 {
-    protected $authUser;
-    private bool $encrypter = true;
+    protected $token = null;
+    private bool $encrypter = false;
 
 
-    public function successWithTokenResponse($data = [], $message = 'Success', $status = 200): \Illuminate\Http\JsonResponse
+    private function envelope($error = false, $data = [], $message = 'Success', $status = 200, $withToken = true, $encrypted = true)
     {
+        $requestTime = Carbon::createFromTimestamp($_SERVER['REQUEST_TIME']);
+        $now = Carbon::now();
         $time = auth('api')->factory()->getTTL() * config('session.lifetime');
-        $token = auth('api')->setTTL($time)->login($this->authUser);
+        $token = $this->token; // ?? auth('api')->setTTL($time)->login($this->authUser);
+
         $response = [
-            'status' => true,
+            'status' => !$error,
             'message' => $message,
-            'data' => $data,
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => $time,
         ];
-        if($this->encrypter) {
+        if ($error) {
+            $response['errors'] = $data;
+        } else {
+            $response['data'] = $data;
+        }
+        if ($withToken) {
+            $response['access_token'] = $token;
+            $response['token_type'] = 'bearer';
+            $response['expires_in'] = $time;
+        }
+        if ($encrypted) {
             $response = HybridCryptoEncService::encryption($response);
         }
         return response()->json($response, $status);
+//        return $response;
+    }
+
+    public function successWithTokenResponse($data = [], $message = 'Success', $status = 200): \Illuminate\Http\JsonResponse
+    {
+//        $requestTime = Carbon::createFromTimestamp($_SERVER['REQUEST_TIME']);
+//        $now = Carbon::now();
+//        $time = auth('api')->factory()->getTTL() * config('session.lifetime');
+////        $token = request()->bearerToken();
+////        $token = auth('api')->setTTL($time)->login($this->authUser);
+//        $token = $this->token;
+//
+//        $response = [
+//            'status' => true,
+//            'message' => $message,
+//            'data' => $data,
+//            'access_token' => $token,
+//            'token_type' => 'bearer',
+//            'expires_in' => $time,
+//        ];
+//        if ($this->encrypter) {
+//            $response = HybridCryptoEncService::encryption($response);
+//        }
+//        return response()->json($response, $status);
+        return $this->envelope(false, $data, $message, $status, true, $this->encrypter);
     }
 
     public function successResponse($data = [], $message = 'Success', $status = 200): \Illuminate\Http\JsonResponse
@@ -35,10 +70,11 @@ trait ResponseTrait
             'message' => $message,
             'data' => $data,
         ];
-        if($this->encrypter) {
+        if ($this->encrypter) {
             $response = HybridCryptoEncService::encryption($response);
         }
-        return response()->json($response, $status);
+//        return response()->json($response, $status);
+        return $this->envelope(false, $data, $message, $status, false, $this->encrypter);
     }
 
     public function errorResponse($message = 'Something went wrong', $status = 400, $errors = []): \Illuminate\Http\JsonResponse
@@ -49,11 +85,13 @@ trait ResponseTrait
             'errors' => $errors
         ];
 
-        if($this->encrypter) {
+        if ($this->encrypter) {
             $response = HybridCryptoEncService::encryption($response);
         }
-        return response()->json($response, $status);
+//        return response()->json($response, $status);
+        return $this->envelope(true, $errors, $message, $status, false, $this->encrypter);
     }
+
     public function errorWithTokenResponse($message = 'Something went wrong', $status = 400, $errors = []): \Illuminate\Http\JsonResponse
     {
         $time = auth('api')->factory()->getTTL() * config('session.lifetime');
@@ -68,11 +106,13 @@ trait ResponseTrait
             'expires_in' => $time,
         ];
 
-        if($this->encrypter) {
+        if ($this->encrypter) {
             $response = HybridCryptoEncService::encryption($response);
         }
-        return response()->json($response, $status);
+//        return response()->json($response, $status);
+        return $this->envelope(true, $errors, $message, $status, true, $this->encrypter);
     }
+
     public static function success($data = [], $message = 'Success', $status = 200): \Illuminate\Http\JsonResponse
     {
         $response = [

@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Http\Resources\DeviceGatewayDataResource;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DeviceGatewayData extends Model
 {
@@ -15,4 +17,10 @@ class DeviceGatewayData extends Model
         'consumed_unit',
         'remaining_unit',
     ];
+
+    public function device(): BelongsTo
+    {
+        return $this->belongsTo(Device::class);
+    }
+/*END::CLASS*/
 }

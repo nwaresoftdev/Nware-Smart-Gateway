@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class NodeSmartSwitchData extends Model
 {
@@ -12,4 +13,10 @@ class NodeSmartSwitchData extends Model
         'node_line_load',
         'data_timestamp',
     ];
+
+    public function node(): BelongsTo
+    {
+        return $this->belongsTo(Node::class);
+    }
+    /*END::CLASS*/
 }

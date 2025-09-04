@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -54,6 +55,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return [
             'email_verified_at' => 'datetime',
+            'otp_verified_at' => 'datetime',
+            'last_login_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -87,4 +90,21 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Otp::class);
     }
+
+    public function groups(): HasMany
+    {
+        return $this->hasMany(DeviceGroup::class);
+    }
+    public function devices(): BelongsToMany
+    {
+        return $this->belongsToMany(Device::class, 'user_has_devices');
+    }
+
+    public function nodes(): HasMany
+    {
+        return $this->hasMany(Node::class);
+    }
+
+
+    /*END::CLASS*/
 }

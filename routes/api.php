@@ -3,7 +3,10 @@
 use App\Services\Api\V1\HybridCryptoEncService;
 use App\Services\EncryptDecryptCryptoService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+Auth::shouldUse('api');
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -75,8 +78,20 @@ Route::group(["prefix" => 'v1'], function () {
         return response()->json($response);
     });
 
+
     Route::post('get-login-otp', [\App\Http\Controllers\Api\V1\Auth\LoginController::class, 'getLoginOtp']);
     Route::post('resend-otp', [\App\Http\Controllers\Api\V1\Auth\LoginController::class, 'getLoginOtp']);
     Route::post('login', [\App\Http\Controllers\Api\V1\Auth\LoginController::class, 'login']);
     Route::post('logout', [\App\Http\Controllers\Api\V1\Auth\LoginController::class, 'logout']);
+
+    Route::post('get-gateway-details', [\App\Http\Controllers\Api\V1\DeviceController::class, 'getGatewayDetails']);
+    Route::post('gateway-on-off', [\App\Http\Controllers\Api\V1\DeviceController::class, 'gatewayOnOff']);
+    Route::post('device-grouping', [\App\Http\Controllers\Api\V1\DeviceController::class, 'deviceGrouping']);
+    Route::post('favourite', [\App\Http\Controllers\Api\V1\DeviceController::class, 'favourite']);
+
+    Route::post('get-node-details', [\App\Http\Controllers\Api\V1\NodeController::class, 'getNodeDetails']);
+    Route::post('node-on-off', [\App\Http\Controllers\Api\V1\NodeController::class, 'nodeOnOff']);
+    Route::post('node-smart-switch-on-off', [\App\Http\Controllers\Api\V1\NodeController::class, 'nodeSmartSwitchOnOff']);
+
+
 });

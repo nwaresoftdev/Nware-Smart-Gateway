@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Node extends Model
 {
@@ -24,4 +26,14 @@ class Node extends Model
         'version',
         'is_favourite',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function nodeSmartSwitchDatas(): HasMany
+    {
+        return $this->hasMany(NodeSmartSwitchData::class);
+    }
+    /*END::CLASS*/
 }
