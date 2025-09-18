@@ -15,8 +15,19 @@ use Illuminate\Http\ResponseTrait;
 class LoginController extends Controller
 {
     use BhashSmsTrait, \App\Traits\ResponseTrait;
+    protected $requestedData = null;
+    public function __construct(Request $request)
+    {
+        parent::__construct();
+        $this->token = $request->bearerToken();
+        $encryptedData = $request->toArray();
+        $this->requestedData = HybridCryptoEncService::decryption($encryptedData);
+    }
 
-
+    /**
+     * @param Request $request { "mobile" : "0123456789" }
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getLoginOtp(Request $request)
     {
 //        dd(phpinfo());
@@ -36,7 +47,7 @@ class LoginController extends Controller
             ['type' => 'login', 'otp' => $otp, 'created_at' => null, 'verified_at' => null]
         );
 
-        $mobile = $user->mobile_no;
+        $mobile = $user->mobile;
 
         // TODO:: Remove [true] for sending sms
         if ($this->sendSms($mobile, $otp, $user->name, "Login")) {
@@ -48,6 +59,10 @@ class LoginController extends Controller
         }
     }
 
+    /**
+     * @param Request $request { "OTP": "690153", "mobile" : "0123456789" }
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function login(Request $request)
     {
 //        $credentials = request(['userName', 'mobile']);
@@ -96,7 +111,6 @@ class LoginController extends Controller
         $token = request()->bearerToken();
         auth()->logout();
         auth()->logout(true);
-dd($token);
         return $this->successResponse('Successfully logged out');
     }
 

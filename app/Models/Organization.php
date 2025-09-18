@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Organization extends Model
 {
@@ -22,4 +23,8 @@ class Organization extends Model
         'pincode',
     ];
 
+    public function users():belongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_has_organizations');
+    }
 }

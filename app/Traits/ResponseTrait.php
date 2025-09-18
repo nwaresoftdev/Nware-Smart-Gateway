@@ -8,10 +8,15 @@ use Carbon\Carbon;
 trait ResponseTrait
 {
     protected $token = null;
+<<<<<<< HEAD
     private bool $encrypter = true;
+=======
+    private bool $encrypter = false;
+    private bool $appendRequestedData = true;
+>>>>>>> bc674e2ebb0ef57200542df97cdb55e3afe21ef3
 
 
-    private function envelope($error = false, $data = [], $message = 'Success', $status = 200, $withToken = true, $encrypted = true)
+    private function envelope($error = false, $data = [], $message = 'Success', $status = 200, $withToken = true, $encrypted = true, $appendRequestedData = false)
     {
         $requestTime = Carbon::createFromTimestamp($_SERVER['REQUEST_TIME']);
         $now = Carbon::now();
@@ -22,7 +27,10 @@ trait ResponseTrait
             'status' => !$error,
             'message' => $message,
         ];
-        if ($error) {
+
+        if ($appendRequestedData) {
+            $response['requestedData'] = $this->requestedData;
+        } if ($error) {
             $response['errors'] = $data;
         } else {
             $response['data'] = $data;
@@ -74,7 +82,7 @@ trait ResponseTrait
             $response = HybridCryptoEncService::encryption($response);
         }
 //        return response()->json($response, $status);
-        return $this->envelope(false, $data, $message, $status, false, $this->encrypter);
+        return $this->envelope(false, $data, $message, $status, false, $this->encrypter, $this->appendRequestedData);
     }
 
     public function errorResponse($message = 'Something went wrong', $status = 400, $errors = []): \Illuminate\Http\JsonResponse
@@ -89,7 +97,7 @@ trait ResponseTrait
             $response = HybridCryptoEncService::encryption($response);
         }
 //        return response()->json($response, $status);
-        return $this->envelope(true, $errors, $message, $status, false, $this->encrypter);
+        return $this->envelope(true, $errors, $message, $status, false, $this->encrypter, $this->appendRequestedData);
     }
 
     public function errorWithTokenResponse($message = 'Something went wrong', $status = 400, $errors = []): \Illuminate\Http\JsonResponse

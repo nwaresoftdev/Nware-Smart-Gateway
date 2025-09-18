@@ -9,6 +9,7 @@ use App\Services\Api\V1\HybridCryptoEncService;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DeviceController extends Controller
 {
@@ -26,18 +27,29 @@ class DeviceController extends Controller
     }
 
     /**
-     * @param Request $request { "id": 1}
+     * @param Request $request {"user_id": 2, "device_id": 2} (optional)
      * @return JsonResponse
      */
     public function getGatewayDetails(Request $request): JsonResponse
     {
+//        DB::enableQueryLog();
         try {
             $user = \App\Models\User::findOrFail($this->authUser->id);
+//            $user->assignRole('User');
 
-            $devices = $user->devices->where('device_type_id', self::GATEWAY_TYPE_ID);
+
+            $query = $user->devices()->where('device_type_id', self::GATEWAY_TYPE_ID)->with('deviceGatewayDatas');
+            if (isset($this->requestedData['user_id'])) {
+                $query->where('devices.user_id', $this->requestedData['user_id']);
+            }if (isset($this->requestedData['device_id'])) {
+                $query->where('devices.id', $this->requestedData['device_id']);
+            }
+            $devices = $query->get();
+//            dd($devices);
             if ($devices) {
                 $devices = DeviceResource::collection( $devices );
                 return $this->successResponse($devices);
+//                return $this->successResponse([$devices, $this->authUser->getRoleNames(), $this->authUser->id]);
             }else{
                 return $this->errorResponse('Device not found');
             }
@@ -52,19 +64,23 @@ class DeviceController extends Controller
      */
     public function gatewayOnOff(Request $request): \Illuminate\Http\JsonResponse
     {
-        $user = \App\Models\User::findOrFail($this->authUser->id);
-        $device = $user->devices->find($this->requestedData['id']);
-        if ($device) {
-            if ( $this->requestedData['device_on_off'] == 'on' || $this->requestedData['device_on_off'] == '1' || $this->requestedData['device_on_off'] === true) {
-                $device->device_on_off = true;
-            }else{
-                $device->device_on_off = false;
+        try {
+            $user = \App\Models\User::findOrFail($this->authUser->id);
+            $device = $user->devices->find($this->requestedData['id']);
+            if ($device) {
+                if ($this->requestedData['device_on_off'] == 'on' || $this->requestedData['device_on_off'] == '1' || $this->requestedData['device_on_off'] === true) {
+                    $device->device_on_off = true;
+                } else {
+                    $device->device_on_off = false;
+                }
+                $device->save();
+                $device = new DeviceResource($device);
+                return $this->successResponse($device);
+            } else {
+                return $this->errorResponse('Device not found');
             }
-            $device->save();
-            $device = new DeviceResource($device);
-            return $this->successResponse($device);
-        }else{
-            return $this->errorResponse('Device not found');
+        }catch (\Exception $exception){
+            return $this->errorResponse($exception->getMessage());
         }
     }
 
@@ -98,12 +114,46 @@ class DeviceController extends Controller
     {
         try {
             $device = Device::findOrFail($this->requestedData['id']);
-            $device->is_favourite = !$device->is_favourite;
-            $device->save();
+            if($this->authUser->hasRole('User')) {
+                $device->is_favourite = !$device->is_favourite;
+                $device->save();
+            }
             $device = new DeviceResource($device);
             return $this->successResponse($device);
         }catch (\Exception $exception){
             return $this->errorResponse($exception->getMessage());
         }
     }
+
+    /**
+     * @param Request $request {}
+     * @return JsonResponse
+     */
+    public function getReport(Request $request): JsonResponse
+    {
+        try {
+            $device = Device::findOrFail($this->requestedData['id']);
+
+            $device = new DeviceResource($device);
+            return $this->successResponse($device);
+        }catch (\Exception $exception){
+            return $this->errorResponse($exception->getMessage());
+        }
+    }
+
+    public function getPowerSource(): JsonResponse
+    {
+        try {
+            $device = Device::findOrFail($this->requestedData['id']);
+
+            $device = new DeviceResource($device);
+            return $this->successResponse($device);
+        }catch (\Exception $exception){
+            return $this->errorResponse($exception->getMessage());
+        }
+    }
+
+
+
+    /*END::CLASS*/
 }

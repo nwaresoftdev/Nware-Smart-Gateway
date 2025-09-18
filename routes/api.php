@@ -93,5 +93,9 @@ Route::group(["prefix" => 'v1'], function () {
     Route::post('node-on-off', [\App\Http\Controllers\Api\V1\NodeController::class, 'nodeOnOff']);
     Route::post('node-smart-switch-on-off', [\App\Http\Controllers\Api\V1\NodeController::class, 'nodeSmartSwitchOnOff']);
 
+    Route::post('get-report', [\App\Http\Controllers\Api\V1\DeviceController::class, 'getReport']);
+    Route::post('get-power-source', [\App\Http\Controllers\Api\V1\DeviceController::class, 'getPowerSource']);
+
+
 
 });

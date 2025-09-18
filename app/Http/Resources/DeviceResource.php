@@ -15,12 +15,13 @@ class DeviceResource extends JsonResource
     public function toArray(Request $request): array
     {
 //        return parent::toArray($request);
+//        dd($this->deviceGatewayDatas);
         return [
             'id'                => $this->id ?? '',
             'type'              => $this->device_type_id ?? '',
             'model'             => $this->device_model_id ?? '',
             'group'             => $this->device_group_id ?? '',
-            'organization'      => $this->orgnization_id ?? '',
+            'organization'      => $this->organization_id ?? '',
             'owner'             => $this->user_id ?? '',
             'name'              => $this->device_name ?? '',
             'status'            => $this->device_on_off ?? '',
@@ -35,6 +36,7 @@ class DeviceResource extends JsonResource
             'appVersion'       => $this->version ?? '',
             'favourite'         => $this->is_favourite ?? '',
             'deviceCode'       => $this->device_id ?? '',
+            'gatewayData'       => $this->deviceGatewayDatas ?? '',
             'createdAt'        => $this->created_at?->toDateTimeString() ?? '',
             'updatedAt'        => $this->updated_at?->toDateTimeString() ?? '',
         ];

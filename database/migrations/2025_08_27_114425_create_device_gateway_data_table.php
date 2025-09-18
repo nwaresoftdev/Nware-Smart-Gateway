@@ -20,6 +20,10 @@ return new class extends Migration
             $table->boolean('is_new_setup')->default(0);
             $table->decimal('consumed_unit', 11, 0)->default(0);
             $table->decimal('remaining_unit', 11, 0)->default(0);
+            $table->decimal('load', 11, 0)->default(0);
+            $table->decimal('balance', 11, 0)->default(0);
+            $table->decimal('per_unit_charge', 11)->default(0);
+            $table->string('label')->nullable();
             $table->timestamps();
         });
     }
