@@ -105,6 +105,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Node::class);
     }
 
+    public function organizations(): belongsToMany
+    {
+        return $this->belongsToMany(Organization::class, 'user_has_organizations');
+    }
+
 
     /*END::CLASS*/
 }
