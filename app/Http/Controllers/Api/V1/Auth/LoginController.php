@@ -8,13 +8,13 @@ use App\Models\Otp;
 use App\Models\User;
 use App\Services\Api\V1\HybridCryptoEncService;
 use App\Traits\BhashSmsTrait;
+use App\Traits\ResponseTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Http\ResponseTrait;
 
 class LoginController extends Controller
 {
-    use BhashSmsTrait, \App\Traits\ResponseTrait;
+    use BhashSmsTrait, ResponseTrait;
     protected $requestedData = null;
     public function __construct(Request $request)
     {
