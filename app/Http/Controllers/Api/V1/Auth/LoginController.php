@@ -24,7 +24,7 @@ class LoginController extends Controller
         $response = $request->toArray();
         $credentials = HybridCryptoEncService::decryption($response);
         $user = User::with('otps')->whereIn('mobile', $credentials)->first();
-//dd($user);
+// dd($user);
         if (!$user) {
             return $this->errorResponse('User Not Found');
         }
@@ -39,7 +39,7 @@ class LoginController extends Controller
         $mobile = $user->mobile_no;
 
         // TODO:: Remove [true] for sending sms
-        if (true || $this->sendSms($mobile, $otp, $user->name, "Login")) {
+        if ($this->sendSms($mobile, $otp, $user->name, "Login")) {
             $response = ['status' => true, 'message' => 'SMS SENT', 'otp' => $otp];
 //            return response()->json([HybridCryptoEncService::enc($response),HybridCryptoEncService::dec(HybridCryptoEncService::enc($response))], 200);
             return $this->successResponse(['otp' => $otp], 'SMS SENT');

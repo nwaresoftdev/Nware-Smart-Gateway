@@ -8,7 +8,7 @@ use Carbon\Carbon;
 trait ResponseTrait
 {
     protected $token = null;
-    private bool $encrypter = false;
+    private bool $encrypter = true;
 
 
     private function envelope($error = false, $data = [], $message = 'Success', $status = 200, $withToken = true, $encrypted = true)
