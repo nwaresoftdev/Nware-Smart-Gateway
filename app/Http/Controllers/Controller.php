@@ -10,5 +10,9 @@ abstract class Controller
     protected $authUser = null;
     public function __construct(){
         $this->authUser = auth()->user();
+//        if(!$this->authUser){
+//              abort(401, 'Unauthorized');
+//
+//        }
     }
 }
