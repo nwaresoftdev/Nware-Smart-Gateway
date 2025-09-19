@@ -16,13 +16,13 @@ class LoginController extends Controller
 {
     use BhashSmsTrait, ResponseTrait;
     protected $requestedData = null;
-    public function __construct(Request $request)
-    {
-        parent::__construct();
-        $this->token = $request->bearerToken();
-        $encryptedData = $request->toArray();
-        $this->requestedData = HybridCryptoEncService::decryption($encryptedData);
-    }
+    // public function __construct(Request $request)
+    // {
+    //     parent::__construct();
+    //     $this->token = $request->bearerToken();
+    //     $encryptedData = $request->toArray();
+    //     $this->requestedData = HybridCryptoEncService::decryption($encryptedData);
+    // }
 
     /**
      * @param Request $request { "mobile" : "0123456789" }

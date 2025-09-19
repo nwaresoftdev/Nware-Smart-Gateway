@@ -32,12 +32,13 @@ class DeviceController extends Controller
      */
     public function getGatewayDetails(Request $request): JsonResponse
     {
+        
 //        DB::enableQueryLog();
+//dd($_SERVER);
+//dd(request()->headers->all());
         try {
             $user = \App\Models\User::findOrFail($this->authUser->id);
 //            $user->assignRole('User');
-
-
             $query = $user->devices()->where('device_type_id', self::GATEWAY_TYPE_ID)->with('deviceGatewayDatas');
             if (isset($this->requestedData['user_id'])) {
                 $query->where('devices.user_id', $this->requestedData['user_id']);
@@ -126,16 +127,23 @@ class DeviceController extends Controller
     }
 
     /**
-     * @param Request $request {}
+     * @param Request $request {"device_id": 1}
      * @return JsonResponse
      */
     public function getReport(Request $request): JsonResponse
     {
         try {
-            $device = Device::findOrFail($this->requestedData['id']);
-
-            $device = new DeviceResource($device);
-            return $this->successResponse($device);
+            $user = \App\Models\User::findOrFail($this->authUser->id);
+            $devices = $user->devices()->where('devices.id', $this->requestedData['device_id'])
+                ->with('deviceGatewayDataLogs:cum_eb_kwh,created_at,meter_serial_number')->get();
+//            dd($devices);
+            if ($devices) {
+//                $devices = DeviceResource::collection( $devices );
+                return $this->successResponse($devices);
+//                return $this->successResponse([$devices, $this->authUser->getRoleNames(), $this->authUser->id]);
+            }else{
+                return $this->errorResponse('Device not found');
+            }
         }catch (\Exception $exception){
             return $this->errorResponse($exception->getMessage());
         }
@@ -144,10 +152,19 @@ class DeviceController extends Controller
     public function getPowerSource(): JsonResponse
     {
         try {
-            $device = Device::findOrFail($this->requestedData['id']);
-
-            $device = new DeviceResource($device);
-            return $this->successResponse($device);
+            $user = \App\Models\User::findOrFail($this->authUser->id);
+            $devices = $user->devices()->where('devices.id', $this->requestedData['device_id'])
+                ->with(['deviceGatewayDataLogs'=>function ($query) {
+                    $query->select(['id','eb_dg_status','created_at','meter_serial_number'])->latest()->first();
+                }])->get();
+//            dd($devices);
+            if ($devices) {
+//                $devices = DeviceResource::collection( $devices );
+                return $this->successResponse($devices);
+//                return $this->successResponse([$devices, $this->authUser->getRoleNames(), $this->authUser->id]);
+            }else{
+                return $this->errorResponse('Device not found');
+            }
         }catch (\Exception $exception){
             return $this->errorResponse($exception->getMessage());
         }

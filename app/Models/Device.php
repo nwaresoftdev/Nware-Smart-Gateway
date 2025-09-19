@@ -46,6 +46,10 @@ class Device extends Model
     {
         return $this->hasMany(DeviceGatewayData::class);
     }
+    public function deviceGatewayDataLogs(): HasMany
+    {
+        return $this->hasMany(DeviceGatewayDataLog::class, 'meter_serial_number', 'serial_number');
+    }
     public function deviceGroup(): BelongsTo
     {
         return $this->belongsTo(DeviceGroup::class);

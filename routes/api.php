@@ -14,7 +14,7 @@ Route::get('/user', function (Request $request) {
 
 
 Route::get('/test', function (Request $request) {
-   return "1231232312";
+    return "1231232312";
 });
 
 // Encrypt response for client
@@ -60,7 +60,7 @@ Route::get('/decry', function (Request $request) {
 
     return response()->json([
         'status' => 'decrypted_ok',
-        'data'   => $decrypted,
+        'data' => $decrypted,
     ]);
 });
 
@@ -84,18 +84,31 @@ Route::group(["prefix" => 'v1'], function () {
     Route::post('login', [\App\Http\Controllers\Api\V1\Auth\LoginController::class, 'login']);
     Route::post('logout', [\App\Http\Controllers\Api\V1\Auth\LoginController::class, 'logout']);
 
-    Route::post('get-gateway-details', [\App\Http\Controllers\Api\V1\DeviceController::class, 'getGatewayDetails']);
-    Route::post('gateway-on-off', [\App\Http\Controllers\Api\V1\DeviceController::class, 'gatewayOnOff']);
-    Route::post('device-grouping', [\App\Http\Controllers\Api\V1\DeviceController::class, 'deviceGrouping']);
-    Route::post('favourite', [\App\Http\Controllers\Api\V1\DeviceController::class, 'favourite']);
+    Route::group([
+//        'middleware' => ['api', 'jwt.verify', 'jwt.auth'],
+        'middleware' => ['api', ],
+//        'middleware' => ['api', 'jwt.verify', 'jwt.auth'],
+//        'middleware' => ['api', 'jwt.verify', 'jwt.auth'],
+    ], function ($router) {
 
-    Route::post('get-node-details', [\App\Http\Controllers\Api\V1\NodeController::class, 'getNodeDetails']);
-    Route::post('node-on-off', [\App\Http\Controllers\Api\V1\NodeController::class, 'nodeOnOff']);
-    Route::post('node-smart-switch-on-off', [\App\Http\Controllers\Api\V1\NodeController::class, 'nodeSmartSwitchOnOff']);
-
-    Route::post('get-report', [\App\Http\Controllers\Api\V1\DeviceController::class, 'getReport']);
-    Route::post('get-power-source', [\App\Http\Controllers\Api\V1\DeviceController::class, 'getPowerSource']);
+//        Route::post('login', 'AuthController@login');
+        Route::post('logout', 'AuthController@logout');
+        Route::post('refresh', 'AuthController@refresh');
+        Route::post('me', 'AuthController@me');
 
 
+        Route::post('get-gateway-details', [\App\Http\Controllers\Api\V1\DeviceController::class, 'getGatewayDetails']);
+        Route::post('gateway-on-off', [\App\Http\Controllers\Api\V1\DeviceController::class, 'gatewayOnOff']);
+        Route::post('device-grouping', [\App\Http\Controllers\Api\V1\DeviceController::class, 'deviceGrouping']);
+        Route::post('favourite', [\App\Http\Controllers\Api\V1\DeviceController::class, 'favourite']);
+
+        Route::post('get-node-details', [\App\Http\Controllers\Api\V1\NodeController::class, 'getNodeDetails']);
+        Route::post('node-on-off', [\App\Http\Controllers\Api\V1\NodeController::class, 'nodeOnOff']);
+        Route::post('node-smart-switch-on-off', [\App\Http\Controllers\Api\V1\NodeController::class, 'nodeSmartSwitchOnOff']);
+
+        Route::post('get-report', [\App\Http\Controllers\Api\V1\DeviceController::class, 'getReport']);
+        Route::post('get-power-source', [\App\Http\Controllers\Api\V1\DeviceController::class, 'getPowerSource']);
+
+    });
 
 });

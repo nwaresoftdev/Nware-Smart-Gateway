@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DeviceGatewayDataLog extends Model
@@ -21,5 +23,14 @@ class DeviceGatewayDataLog extends Model
         'cum_dg_kwh_40061','total_kw','total_kva','total_kvar','na_40065','na_40066','na_40067','na_40068','na_40069','na_40070','induvisal_relay_status_dg',
         'induvisal_relay_status_eb','over_aattp_eb','over_aattp_dg','na_40075','version','crc'
     ];
+
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
+    public function device(): BelongsTo
+    {
+        return $this->belongsTo(Device::class, 'meter_serial_number', 'serial_number');
+    }
 
 }
